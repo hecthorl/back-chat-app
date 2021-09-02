@@ -1,6 +1,5 @@
 const express = require("express");
 const http = require("http");
-require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
@@ -31,4 +30,4 @@ io.on("connection", socket => {
    });
 });
 
-server.listen(PORT, () => console.log(process.env.URL_ORIGIN));
+server.listen(PORT, () => console.log("Server running causa"));
