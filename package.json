@@ -2,13 +2,13 @@
    "name": "back",
    "version": "1.0.0",
    "description": "",
-   "main": "server.js",
+   "main": "app.js",
    "engines": {
       "node": "14.x"
    },
    "scripts": {
       "dev": "nodemon main",
-      "start": "node server"
+      "start": "node app.js"
    },
    "keywords": [],
    "author": "",
