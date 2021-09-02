@@ -7,12 +7,11 @@ const server = http.createServer(app);
 
 const { Server } = require("socket.io");
 
-const urlOrigin = process.env.URL_ORIGIN;
 const PORT = process.env.PORT || 4000;
 
 const io = new Server(server, {
    cors: {
-      origin: [urlOrigin, "http://localhost:3000"],
+      origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
       methods: ["GET", "POST"],
    },
 });
