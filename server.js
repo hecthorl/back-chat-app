@@ -1,24 +1,28 @@
 const express = require("express");
 const http = require("http");
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
 
 const { Server } = require("socket.io");
 
-const urlOrigin = process.env.URL_ORIGIN || "http://localhost:3000";
+const urlOrigin = process.env.URL_ORIGIN;
 const PORT = process.env.PORT || 4000;
 
 const io = new Server(server, {
    cors: {
-      origin: urlOrigin,
+      origin: [urlOrigin, "http://localhost:3000"],
       methods: ["GET", "POST"],
    },
 });
 
+app.get("/", (req, res) => {
+   res.status(200).send("Todo OK");
+});
+
 io.on("connection", socket => {
    socket.on("join_channel", data => {
-      // console.log(data);
       socket.join(data.room);
       socket.emit("join_channel", data);
    });
@@ -28,4 +32,4 @@ io.on("connection", socket => {
    });
 });
 
-server.listen(PORT, () => console.log("listening on 4000"));
+server.listen(PORT, () => console.log(process.env.URL_ORIGIN));

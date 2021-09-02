@@ -3,6 +3,9 @@
    "version": "1.0.0",
    "description": "",
    "main": "server.js",
+   "engines": {
+      "node": "14.x"
+   },
    "scripts": {
       "dev": "nodemon main",
       "start": "node server"
@@ -15,6 +18,7 @@
       "socket.io": "4.2.0"
    },
    "devDependencies": {
+      "dotenv": "10.0.0",
       "nodemon": "2.0.12"
    }
 }
