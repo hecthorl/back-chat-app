@@ -27,7 +27,7 @@ app.use(cors());
 io.on("connection", socket => {
    socket.on("join_channel", data => {
       socket.join(data.room);
-      saveDB("./bdRooms.json", data);
+      // saveDB("./bdRooms.json", data);
       socket.emit("join_channel", data);
    });
 
