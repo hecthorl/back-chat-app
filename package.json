@@ -2,20 +2,23 @@
    "name": "back",
    "version": "1.0.0",
    "description": "",
-   "main": "app.js",
    "engines": {
       "node": "14.x"
    },
    "scripts": {
-      "dev": "nodemon main",
-      "start": "node app.js"
+      "dev": "nodemon server",
+      "start": "node server"
    },
    "keywords": [],
    "author": "",
-   "license": "ISC",
+   "license": "MIT",
    "dependencies": {
       "cors": "2.8.5",
       "express": "4.17.1",
+      "fastify": "3.22.0",
+      "fastify-cors": "6.0.2",
+      "fastify-mongodb": "4.1.0",
+      "fastify-socket.io": "2.0.1",
       "socket.io": "4.2.0"
    },
    "devDependencies": {
