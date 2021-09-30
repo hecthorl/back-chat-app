@@ -1,5 +1,5 @@
 require("dotenv").config();
-const fastify = require("fastify")({ logger: "debug" });
+const fastify = require("fastify")();
 const socket = require("fastify-socket.io");
 const cors = require("fastify-cors");
 const mongodb = require("fastify-mongodb");
@@ -61,8 +61,8 @@ fastify.route({
    handler: async function (request) {
       const rooms = this.mongo.roomsDB.db.collection("rooms");
       const dataParsed = normalizeData(request.body);
-      const res = await rooms.insertOne(dataParsed);
-      console.log(res);
+      await rooms.insertOne(dataParsed);
+      // console.log(res);
       return {
          success: true,
          message: "ok",
