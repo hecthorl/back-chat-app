@@ -1,99 +1,21 @@
 require("dotenv").config();
-const fastify = require("fastify")({ logger: true });
-const socket = require("fastify-socket.io");
-const cors = require("fastify-cors");
-const mongodb = require("fastify-mongodb");
-const normalizeData = require("./dataParsed");
 
-fastify.register(cors, {
-   origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
-   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-   allowedHeaders: ["Content-Type"],
-   credentials: false,
-});
-fastify.register(socket, {
-   cors: {
-      origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
-      methods: ["GET", "POST"],
-   },
-});
-fastify.register(mongodb, {
-   url: process.env.MONGODB_URI,
-   name: "roomsDB",
+// Require the framework
+const Fastify = require("fastify");
+
+// Instantiate Fastify with some config
+const app = Fastify({
+   logger: true,
+   pluginTimeout: 10000,
 });
 
-fastify.route({
-   method: "GET",
-   url: "/roominfo",
-   schema: {
-      response: {
-         200: {
-            type: "object",
-            properties: {
-               _id: { type: "string" },
-               roomId: { type: "string" },
-               roomName: { type: "string" },
-               isPrivate: { type: "boolean" },
-               userName: { type: "string" },
-               __v: { type: "number" },
-            },
-         },
-      },
-   },
-   handler: async function (request) {
-      const { roomId } = request.query;
-      const rooms = this.mongo.roomsDB.db.collection("rooms");
-      return await rooms.findOne({ roomId });
-   },
-});
-fastify.route({
-   method: "POST",
-   url: "/",
-   schema: {
-      response: {
-         201: {
-            type: "object",
-            properties: {
-               success: { type: "boolean" },
-               message: { type: "string" },
-            },
-         },
-      },
-   },
-   handler: async function (request) {
-      const rooms = this.mongo.roomsDB.db.collection("rooms");
-      const dataParsed = normalizeData(request.body);
-      await rooms.insertOne(dataParsed);
-      // console.log(res);
-      return {
-         success: true,
-         message: "ok",
-      };
-   },
-});
-fastify.route({
-   method: "GET",
-   url: "/",
-   handler: async function () {
-      return {
-         success: true,
-         message: "ok",
-      };
-   },
-});
+// Register your application as a normal plugin.
+app.register(require("./app.js"));
 
-fastify.listen(process.env.PORT || 4000, "0.0.0.0", err => {
-   if (err) throw Error(err);
-   console.log("server running");
-   // fastify.io.on("connection", socket => {
-   //    socket.on("join_channel", data => {
-   //       socket.join(data.room);
-
-   //       socket.emit("join_channel", data);
-   //    });
-
-   //    socket.on("new message", data => {
-   //       socket.to(data.room).emit("msg recibido", data);
-   //    });
-   // });
+// Start listening.
+app.listen(process.env.PORT || 4000, "0.0.0.0", err => {
+   if (err) {
+      app.log.error(err);
+      process.exit(1);
+   }
 });
