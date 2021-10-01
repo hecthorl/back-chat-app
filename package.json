@@ -18,7 +18,6 @@
       "fastify-socket.io": "2.0.1"
    },
    "devDependencies": {
-      "dotenv": "10.0.0",
-      "nodemon": "2.0.13"
+      "dotenv": "10.0.0"
    }
 }
