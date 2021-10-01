@@ -82,9 +82,12 @@ fastify.route({
    },
 });
 // Mucho callback :v
+
+const PORT = process.env.PORT || 4000;
+
 (async () => {
    try {
-      await fastify.listen(4000);
+      await fastify.listen(PORT);
       fastify.io.on("connection", socket => {
          socket.on("join_channel", data => {
             socket.join(data.room);
@@ -101,12 +104,3 @@ fastify.route({
       process.exit(1);
    }
 })();
-// fastify.get("/", async (request, reply) => {
-//    const rooms = this.mongo.db.collection("rooms");
-//    console.log({ rooms });
-//    return { hello: "world" };
-// });
-// fastify.post("/", async (request, reply) => {
-//    console.log(typeof request.body);
-//    return { hello: "world" };
-// });
