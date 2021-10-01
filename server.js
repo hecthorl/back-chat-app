@@ -1,14 +1,11 @@
 require("dotenv").config();
-const fastify = require("fastify")();
+const fastify = require("fastify")({ logger: true });
 const socket = require("fastify-socket.io");
 const cors = require("fastify-cors");
 const mongodb = require("fastify-mongodb");
 const normalizeData = require("./dataParsed");
 
-fastify.register(cors, {
-   origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
-   methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-});
+fastify.register(cors);
 fastify.register(socket, {
    cors: {
       origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
