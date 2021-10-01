@@ -71,6 +71,16 @@ fastify.route({
       };
    },
 });
+fastify.route({
+   method: "GET",
+   url: "/",
+   handler: async function () {
+      return {
+         success: true,
+         message: "ok",
+      };
+   },
+});
 // Mucho callback :v
 (async () => {
    try {

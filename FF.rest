@@ -1,7 +1,6 @@
-GET http://localhost:4000/roominfo?roomId=laterceraesla
-
+GET http://localhost:4000
 ###
-POST http://localhost:4000
+POST https://back-socket.herokuapp.com
 content-type: application/json
 
 {
