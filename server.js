@@ -81,22 +81,19 @@ fastify.route({
       };
    },
 });
-// Mucho callback :v
 
-const PORT = process.env.PORT || 4000;
-
-fastify.listen(PORT, "0.0.0.0", err => {
+fastify.listen(process.env.PORT || 4000, "0.0.0.0", err => {
    if (err) throw Error(err);
    console.log("server running");
-   fastify.io.on("connection", socket => {
-      socket.on("join_channel", data => {
-         socket.join(data.room);
+   // fastify.io.on("connection", socket => {
+   //    socket.on("join_channel", data => {
+   //       socket.join(data.room);
 
-         socket.emit("join_channel", data);
-      });
+   //       socket.emit("join_channel", data);
+   //    });
 
-      socket.on("new message", data => {
-         socket.to(data.room).emit("msg recibido", data);
-      });
-   });
+   //    socket.on("new message", data => {
+   //       socket.to(data.room).emit("msg recibido", data);
+   //    });
+   // });
 });
