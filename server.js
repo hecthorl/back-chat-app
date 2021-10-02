@@ -1,4 +1,6 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+   require("dotenv").config();
+}
 
 // Require the framework
 const Fastify = require("fastify");
@@ -33,7 +35,7 @@ app.ready().then(() => {
    });
 });
 
-app.listen(process.env.PORT || 4000, "0.0.0.0", err => {
+app.listen(process.env.PORT || 5000, "0.0.0.0", err => {
    if (err) {
       app.log.error(err);
       process.exit(1);
