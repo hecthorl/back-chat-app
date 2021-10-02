@@ -1,8 +1,6 @@
 if (process.env.NODE_ENV !== "production") {
    require("dotenv").config();
 }
-
-// Require the framework
 const Fastify = require("fastify");
 const cors = require("fastify-cors");
 const socketsIO = require("fastify-socket.io");
@@ -14,24 +12,18 @@ const app = Fastify({
    pluginTimeout: 10000,
 });
 
-const config = {
+const corsConfig = {
    origin: ["https://front-chat-app.vercel.app/", "http://localhost:3000"],
-   methods: ["GET", "PUT", "POST"],
+   methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
 };
 
-// Register your application as a normal plugin.
-app.register(cors, config);
-app.register(socketsIO, {
-   cors: {
-      origin: ["https://front-chat-app.vercel.app/", "http://localhost:3000"],
-      methods: ["GET", "PUT", "POST"],
-   },
-});
+app.register(cors, corsConfig);
+app.register(socketsIO, { cors: corsConfig });
 app.register(require("./app.js"));
 
 app.ready().then(() => {
    app.io.on("connection", socket => {
-      console.log(socket.id);
+      socket.emit("hello", "faaaaas");
    });
 });
 
