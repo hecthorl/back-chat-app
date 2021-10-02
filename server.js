@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 const Fastify = require("fastify");
 const cors = require("fastify-cors");
 const socketsIO = require("fastify-socket.io");
-// const mongoDB = require('fastify-mongodb')
+const mongoDB = require("fastify-mongodb");
 
 // Instantiate Fastify with some config
 const app = Fastify({
@@ -19,6 +19,7 @@ const corsConfig = {
 
 app.register(cors, corsConfig);
 app.register(socketsIO, { cors: corsConfig });
+app.register(mongoDB, { url: process.env.MONGODB_URI });
 app.register(require("./app.js"));
 
 app.ready().then(() => {
