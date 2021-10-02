@@ -9,13 +9,19 @@ const mongoDB = require("fastify-mongodb");
 // Instantiate Fastify with some config
 const app = Fastify();
 
-const corsConfig = {
-   origin: ["https://front-chat-app.vercel.app/", "http://localhost:3000"],
+app.register(cors, {
+   origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
    methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
-};
+   preflightContinue: false,
+});
 
-app.register(cors, corsConfig);
-app.register(socketsIO, { cors: corsConfig });
+app.register(socketsIO, {
+   cors: {
+      origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
+      methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
+      preflightContinue: false,
+   },
+});
 app.register(mongoDB, { url: process.env.MONGODB_URI });
 app.register(require("./app.js"), { algo: "sadas" });
 
