@@ -24,7 +24,14 @@ app.register(require("./app.js"));
 
 app.ready().then(() => {
    app.io.on("connection", socket => {
-      socket.emit("hello", "faaaaas");
+      socket.on("join_channel", data => {
+         socket.join(data.room);
+         socket.emit("join_channel", data);
+      });
+
+      socket.on("new message", data => {
+         socket.to(data.room).emit("msg recibido", data);
+      });
    });
 });
 
