@@ -23,7 +23,7 @@ app.register(socketsIO, {
    },
 });
 app.register(mongoDB, { url: process.env.MONGODB_URI });
-app.register(require("./app.js"), { algo: "sadas" });
+app.register(require("./app.js"));
 
 app.ready()
    .then(({ io, mongo }) => {
@@ -36,6 +36,7 @@ app.ready()
          });
 
          socket.on("new message", async data => {
+            // console.log(data);
             socket.to(data.roomId).emit("msg recibido", data);
 
             const query = { roomId: data.roomId };

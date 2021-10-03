@@ -2,9 +2,10 @@
 module.exports = async function (fastify, opts) {
    const RoomsCollection = fastify.mongo.db.collection("rooms");
 
-   fastify.get("/", (req, res) => {
-      fastify.io.emit("hello", "gaaaaaaaaaaaaa");
-      res.code(201).send("holi todo ok pérro");
+   fastify.get("/allrooms", async (req, res) => {
+      const cursor = await RoomsCollection.find();
+      const allRooms = await cursor.toArray();
+      res.code(200).send(allRooms);
    });
 
    fastify.get("/roominfo", async (req, res) => {
