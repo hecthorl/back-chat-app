@@ -5,10 +5,12 @@ const Fastify = require("fastify");
 const cors = require("fastify-cors");
 const socketsIO = require("fastify-socket.io");
 const mongoDB = require("fastify-mongodb");
+const helmet = require("fastify-helmet");
+const updateChat = require("./utils/updateChat.js");
 
 // Instantiate Fastify with some config
 const app = Fastify();
-
+app.register(helmet);
 app.register(cors, {
    origin: ["https://front-chat-app.vercel.app", "http://localhost:3000"],
    methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
@@ -38,11 +40,7 @@ app.ready()
          socket.on("new message", async data => {
             socket.to(data.roomId).emit("message_in", data);
 
-            const query = { roomId: data.roomId };
-            const updateDoc = {
-               $push: { chat: data },
-            };
-            const opt = { upsert: true };
+            const { opt, query, updateDoc } = updateChat(data.roomId, data);
             // TODO: majear exepción
             await RoomsCollection.updateOne(query, updateDoc, opt);
          });
