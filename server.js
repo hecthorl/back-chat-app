@@ -30,14 +30,13 @@ app.ready()
       const RoomsCollection = mongo.db.collection("rooms");
 
       io.on("connection", socket => {
-         socket.on("join_channel", data => {
-            socket.join(data.room);
-            socket.emit("join_channel", data);
+         socket.on("join_channel", roomId => {
+            socket.join(roomId);
+            socket.emit("join_channel", roomId);
          });
 
          socket.on("new message", async data => {
-            // console.log(data);
-            socket.to(data.roomId).emit("msg recibido", data);
+            socket.to(data.roomId).emit("message_in", data);
 
             const query = { roomId: data.roomId };
             const updateDoc = {
