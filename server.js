@@ -32,6 +32,7 @@ app.ready()
       const RoomsCollection = mongo.db.collection("rooms");
 
       io.on("connection", socket => {
+         // console.log(socket.handshake);
          socket.on("join_channel", roomId => {
             socket.join(roomId);
             socket.emit("join_channel", roomId);
@@ -43,6 +44,21 @@ app.ready()
             const { opt, query, updateDoc } = updateChat(data.roomId, data);
             // TODO: majear exepción
             await RoomsCollection.updateOne(query, updateDoc, opt);
+         });
+         socket.emit("me", socket.id);
+         socket.on("disconnect", () => {
+            socket.broadcast.emit("callended");
+         });
+         socket.on("calluser", data => {
+            console.log(data, "en calluser");
+            const ojt = {
+               signal: data.signalData,
+               ...data,
+            };
+            socket.to(data.userToCall).emit("calluser", ojt);
+         });
+         socket.on("ansercall", data => {
+            socket.to(data.to).emit("callaccepted", data.signal);
          });
       });
    })
