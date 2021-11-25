@@ -8,6 +8,10 @@ module.exports = async function (fastify, opts) {
       res.code(200).send(allRooms);
    });
 
+   fastify.get("/", (req, res) => {
+      res.code(200).send("allRooms");
+   });
+
    fastify.get("/roominfo", async (req, res) => {
       const { roomId } = req.query;
       const room = await RoomsCollection.findOne({ roomId });
@@ -18,7 +22,7 @@ module.exports = async function (fastify, opts) {
       const result = await RoomsCollection.insertOne(req.body);
       if (!result || !result.acknowledged) {
          res.code(500).send({ success: false, msg: "Error interno" });
-         return;
+         return null;
       }
       res.code(201).send({ success: true, msg: "created" });
    });

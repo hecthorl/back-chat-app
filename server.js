@@ -27,6 +27,10 @@ app.register(socketsIO, {
 app.register(mongoDB, { url: process.env.MONGODB_URI });
 app.register(require("./app.js"));
 
+// States
+const users = {};
+const socketToRoom = {};
+
 app.ready()
    .then(({ io, mongo }) => {
       const RoomsCollection = mongo.db.collection("rooms");
@@ -45,10 +49,11 @@ app.ready()
             // TODO: majear exepción
             await RoomsCollection.updateOne(query, updateDoc, opt);
          });
+         // Esto funciona pero no es lo que quiero...
          socket.emit("me", socket.id);
-         socket.on("disconnect", () => {
-            socket.broadcast.emit("callended");
-         });
+         // socket.on("disconnect", () => {
+         //    socket.broadcast.emit("callended");
+         // });
          socket.on("calluser", data => {
             console.log(data, "en calluser");
             const ojt = {
@@ -60,15 +65,62 @@ app.ready()
          socket.on("ansercall", data => {
             socket.to(data.to).emit("callaccepted", data.signal);
          });
+
+         //VideoChat secc
+         socket.on("join_videoroom", roomId => {
+            if (users[roomId]) {
+               const length = users[roomId].length;
+               if (length === 4) {
+                  socket.emit("room full");
+                  return;
+               }
+               users[roomId].push(socket.id);
+            } else {
+               users[roomId] = [socket.id];
+            }
+
+            socketToRoom[socket.id] = roomId;
+            const usersInThisRoom = users[roomId].filter(
+               id => id !== socket.id
+            );
+
+            socket.emit("all users", usersInThisRoom);
+         });
+         socket.on("sending signal", payload => {
+            socket.to(payload.userToSignal).emit("user joined", {
+               signal: payload.signal,
+               callerID: payload.callerID,
+            });
+         });
+
+         socket.on("returning signal", payload => {
+            socket.to(payload.callerID).emit("receiving returned signal", {
+               signal: payload.signal,
+               id: socket.id,
+            });
+         });
+
+         socket.on("disconnect", () => {
+            const roomID = socketToRoom[socket.id];
+            let room = users[roomID];
+            if (room) {
+               room = room.filter(id => id !== socket.id);
+               users[roomID] = room;
+            }
+         });
       });
    })
    .catch(err => {
-      console.log({ err });
+      app.log.error(err);
+      process.exit(1);
    });
 
-app.listen(process.env.PORT || 5000, "0.0.0.0", err => {
+const { PORT = 5000 } = process.env;
+
+app.listen(PORT, "0.0.0.0", err => {
    if (err) {
       app.log.error(err);
       process.exit(1);
    }
+   console.log("server status: on", PORT);
 });
