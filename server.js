@@ -5,6 +5,7 @@ const Fastify = require('fastify')
 const fastifyCors = require('fastify-cors')
 const mongoDB = require('fastify-mongodb')
 const helmet = require('fastify-helmet')
+// const twilio = require('twilio')
 
 // Instantiate Fastify with some config
 const app = Fastify({ logger: { level: 'error' } })
@@ -16,6 +17,7 @@ const cors = {
 app.register(helmet)
 app.register(fastifyCors, cors)
 app.register(mongoDB, { url: process.env.MONGODB_URI })
+// app.register(twilio)
 app.register(require('./app.js'))
 
 const { PORT = 5000 } = process.env

@@ -1,3 +1,6 @@
+const AccessToken = require('twilio').jwt.AccessToken
+const VideoGrant = AccessToken.VideoGrant
+
 // Esto debe ser ASYNC o no funciona
 module.exports = async function (fastify, opts) {
    const RoomsCollection = fastify.mongo.db.collection('rooms')
@@ -6,6 +9,21 @@ module.exports = async function (fastify, opts) {
       const cursor = await RoomsCollection.find()
       const allRooms = await cursor.toArray()
       res.code(200).send(allRooms)
+   })
+   fastify.post('/get_token', async (req, res) => {
+      const accessToken = new AccessToken(
+         process.env.ACCOUNT_SID,
+         process.env.API_KEY_SID,
+         process.env.API_KEY_SECRET,
+         { identity: req.body.identity }
+      )
+
+      const room = req.body.room
+      const grant = new VideoGrant({ room })
+
+      accessToken.addGrant(grant)
+
+      res.status(201).send({ token: accessToken.toJwt() })
    })
 
    fastify.get('/', (req, res) => {
