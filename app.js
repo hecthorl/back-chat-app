@@ -17,7 +17,7 @@ module.exports = async function (fastify, opts) {
          process.env.API_KEY_SECRET,
          { identity: req.body.identity }
       )
-
+      console.log(process.env.ACCOUNT_SID)
       const room = req.body.room
       const grant = new VideoGrant({ room })
 
